@@ -7,7 +7,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TaskAdapter());
-  await Hive.openBox<Task>('Tasks');
+  final Box f = await Hive.openBox<Task>('Tasks');
+  f.clear();
   runApp(MaterialApp(
     routes: {
       '/list_groups': (context) => const ListGroupsWidget(),

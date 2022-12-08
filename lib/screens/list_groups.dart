@@ -1,3 +1,4 @@
+import 'package:demo_proj/models/list_groups_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -10,7 +11,8 @@ class ListGroupsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('My tasks')),
-      body: const _GroupsWidget(),
+      body: ListGroupModelProvider(
+          model: ListGroupModel(), child: const _GroupsWidget()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamed('/list_groups/new');
@@ -21,54 +23,42 @@ class ListGroupsWidget extends StatelessWidget {
   }
 }
 
-class _GroupsWidget extends StatefulWidget {
+class _GroupsWidget extends StatelessWidget {
   const _GroupsWidget({super.key});
 
   @override
-  State<_GroupsWidget> createState() => _GroupsWidgetState();
-}
-
-class _GroupsWidgetState extends State<_GroupsWidget> {
-  late int count;
-  late List<Task> elements;
-
-  @override
   Widget build(BuildContext context) {
-    final box = Hive.box<Task>('Tasks');
-    count = box.values.length;
-    elements = box.values.toList();
+    final groupCount =
+        ListGroupModelProvider.watch(context)?.model.tasks.length ?? 0;
+    print(groupCount);
     return ListView.separated(
       itemBuilder: (BuildContext context, int index) {
-        return _ListElementWidget(
-          title: elements[index].title,
-          desc: elements[index].description,
-        );
+        return _ListElementWidget(index);
       },
       separatorBuilder: (BuildContext context, int index) {
         return const Divider(
           thickness: 3,
         );
       },
-      itemCount: count,
+      itemCount: groupCount,
     );
   }
 }
 
 class _ListElementWidget extends StatelessWidget {
-  final String? title;
-  final String? desc;
-
-  const _ListElementWidget({
-    super.key,
-    required this.title,
-    required this.desc,
-  });
+  final index;
+  const _ListElementWidget(this.index, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title!),
-      subtitle: Text(desc!),
+      title: Text(
+          ListGroupModelProvider.read(context)!.model.tasks[index].title ?? ''),
+      subtitle: Text(ListGroupModelProvider.read(context)!
+              .model
+              .tasks[index]
+              .description ??
+          ''),
       contentPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       leading: const _CheckerWidget(),
       trailing: const Icon(Icons.chevron_right),

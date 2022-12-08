@@ -9,10 +9,10 @@ class NewTaskWidget extends StatefulWidget {
 }
 
 class _NewTaskWidgetState extends State<NewTaskWidget> {
-  final _model = ListGroupModel();
+  final _model = NewTaskModel();
   @override
   Widget build(BuildContext context) {
-    return ListGroupModelProvider(
+    return NewTaskModelProvider(
         model: _model, child: const NewTaskWidgetBody());
   }
 }
@@ -28,7 +28,7 @@ class NewTaskWidgetBody extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.check),
         onPressed: () =>
-            ListGroupModelProvider.read(context)?.model.saveTask(context),
+            NewTaskModelProvider.read(context)?.model.saveTask(context),
       ),
     );
   }
@@ -48,7 +48,7 @@ class _NewTaskFormWidget extends StatelessWidget {
               hintText: 'Название задания',
             ),
             onChanged: (value) {
-              ListGroupModelProvider.read(context)?.model.title = value;
+              NewTaskModelProvider.read(context)?.model.title = value;
             },
           ),
         ),
@@ -59,7 +59,7 @@ class _NewTaskFormWidget extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
           onChanged: (value) {
-            ListGroupModelProvider.read(context)?.model.description = value;
+            NewTaskModelProvider.read(context)?.model.description = value;
           },
         ),
       ],
